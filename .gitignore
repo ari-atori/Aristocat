@@ -1,0 +1,7 @@
+secrets/
+.vscode/
+tmp/
+aribot
+aribot_beta
+error.txt
+*.o
