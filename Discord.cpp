@@ -105,7 +105,7 @@ void Discord::onReady(const dpp::ready_t& event) {
 		json["basement"] = false;
 		saveJSON("dirty.json", json);
 
-		c_cronjobs.insert({"birthdays", Cronjob(CRONJOB_DAILY, cronjob_birthday, 18, 06, 0)});
+		c_cronjobs.insert({"birthdays", Cronjob(CRONJOB_DAILY, cronjob_birthday, 8, 00, 0)}); // 12:00 UTC
 
 		c_alive = true;
 		c_thread = new std::thread(Discord::cronJobThread);
