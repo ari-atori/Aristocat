@@ -1,4 +1,4 @@
-C_FLAGS = -O2 -std=c++17
+C_FLAGS = -std=c++17
 L_FLAGS = -ldpp -lmysqlcppconn
 
 ifeq ($(version),beta)

@@ -4,4 +4,6 @@ tmp/
 aribot
 aribot_beta
 error.txt
+logs.txt
 *.o
+logs_beta.txt

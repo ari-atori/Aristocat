@@ -14,12 +14,14 @@ public:
 	static dpp::snowflake getRole(std::string roleName);
 
 	static dpp::cluster* getBot() { return c_bot; }
+	static dpp::snowflake getGuild();
 
 	static dpp::guild_member& getMember(dpp::snowflake);
 	static dpp::snowflake getChannel(std::string);
 
 	static void start();
 private:
+	static void onLog(const dpp::log_t& event);
 	static void onReady(const dpp::ready_t& event);
 	static void onSlashCommand(const dpp::slashcommand_t& event);
 	static void onGuildMemberJoin(const dpp::guild_member_add_t& event);

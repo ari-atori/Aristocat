@@ -1,5 +1,6 @@
 #include "Discord.hpp"
 #include "Database.hpp"
+#include "Message.hpp"
 #include "commands/slashcommands.hpp"
 #include "cronjobs/cronjobs.hpp"
 #include <bitset>
@@ -47,13 +48,17 @@ void Discord::init() {
 
 	c_bot = new dpp::cluster(json["token"]);
 
-	c_bot->on_slashcommand(Discord::onSlashCommand);
-
 	auto guilds = c_bot->current_user_get_guilds_sync();
 	for (auto g : guilds) {
 		c_guilds[g.first] = c_bot->guild_get_members_sync(g.first, 1000, 0);
 		// TODO: Find more constructive way to merge larger data sets in the case for more users
 	}
+
+	c_bot->set_websocket_protocol(dpp::websocket_protocol_t::ws_etf);
+
+	c_bot->on_log(Discord::onLog);
+
+	c_bot->on_slashcommand(Discord::onSlashCommand);
 
 	c_bot->on_ready(Discord::onReady);
 
@@ -73,11 +78,25 @@ void Discord::start() {
 	c_bot->start(dpp::st_wait);
 }
 
+void Discord::onLog(const dpp::log_t& event) {
+#ifdef ARIBOT_BETA
+	std::fstream file("logs_beta.txt", std::ios::app);
+#else
+	std::fstream file("logs.txt", std::ios::app);
+#endif
+	static std::string types[6] = {"[TRACE] ", "[DEBUG] ", "[INFO] ", "[WARNING] ", "[ERROR] ", "[CRITICAL] "};
+	file << types[event.severity] << event.message << std::endl;
+}
+
 void Discord::onReady(const dpp::ready_t& event) {
 	if (dpp::run_once<struct register_bot_commands>()) {
 
+#ifdef ARIBOT_BETA
+		nlohmann::json json = loadJSON("dirty_beta.json");
+#else
 		nlohmann::json json = loadJSON("dirty.json");
-	
+#endif
+
 		std::vector<dpp::command_option> ping_options;
 		addCommand("ping", "Ping pong!", command_ping, ping_options, json["ping"]);
 
@@ -103,9 +122,15 @@ void Discord::onReady(const dpp::ready_t& event) {
 		json["birthday"] = false;
 		json["setbirthday"] = false;
 		json["basement"] = false;
+
+#ifdef ARIBOT_BETA
+		saveJSON("dirty_beta.json", json);
+#else
 		saveJSON("dirty.json", json);
+#endif
 
 		c_cronjobs.insert({"birthdays", Cronjob(CRONJOB_DAILY, cronjob_birthday, 8, 00, 0)}); // 12:00 UTC
+		c_cronjobs.insert({"pings", Cronjob(CRONJOB_MINUTELY, cronjob_pings, 0, 0, 0)});
 
 		c_alive = true;
 		c_thread = new std::thread(Discord::cronJobThread);
@@ -139,6 +164,10 @@ dpp::snowflake Discord::getRole(std::string roleName) {
 
 dpp::snowflake Discord::getChannel(std::string channelName) {
 	return dpp::snowflake((uint64_t)c_settings["channels"][channelName]); 
+}
+
+dpp::snowflake Discord::getGuild() {
+	return dpp::snowflake((uint64_t)c_settings["guild"]);
 }
 
 dpp::guild_member& Discord::getMember(dpp::snowflake member) {
@@ -180,7 +209,6 @@ void Discord::cronJobThread() {
 		bool anyCompleted = false;
 		for (auto& cj : c_cronjobs) {
 			if (cj.second.execute(currentTime)) {
-				std::cout << "Event Compelted" << std::endl;
 				c_crontimes[cj.first] = (uint64_t) time;
 				anyCompleted = true;
 			}
