@@ -24,6 +24,10 @@ class Birthday(commands.Cog, name="birthday"):
 		f = '%Y-%m-%d %H:%M:%S'
 		if time is None:
 			searchResults = search_dates(timeString, settings={'TIMEZONE': tz, 'RETURN_AS_TIMEZONE_AWARE': True, 'PREFER_DATES_FROM': 'future', 'PREFER_DAY_OF_MONTH': 'first'}, languages=['en'])
+			if searchResults is None:
+				await interaction.response.send_message("The time given has more spelling errors than a Hiroshiman child's DNA, please try a different format")
+				return
+				
 			for sr in searchResults:
 				time = sr[1]
 				timeWords = sr[0]
@@ -42,10 +46,11 @@ class Birthday(commands.Cog, name="birthday"):
 			mycursor.execute(f"DELETE FROM birthdays WHERE id = '{interaction.user.id}'")
 			mydb.commit()
 			mycursor.execute("INSERT INTO birthdays (id, mention, birthday) VALUES ("+ str(interaction.user.id) +", '"+ str(interaction.user.mention) +"', '" + timeUTC.strftime(f) +"')")
-			await interaction.response.send_message("Your birthday is set for: " + time.strftime(f) + " " + tz + " \n\nHere's the time I read: " + timeWords)
 			mydb.commit()
 			mycursor.close()
 			mydb.close()
+
+			await interaction.response.send_message("Your birthday is set for: " + time.strftime(f) + " " + tz + " \n\nHere's the time I read: " + timeWords)
 		else:
 			await interaction.response.send_message("The time given has more spelling errors than a Hiroshiman child's DNA, please try a different format")
 

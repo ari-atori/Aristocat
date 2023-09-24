@@ -8,6 +8,7 @@ disc.txt
 *.o
 logs_beta.log
 logs_prod.log
+src/__pycache__
 src/commands/__pycache__/
 src/cron_jobs/__pycache__/
 src/real_time/__pycache__/
