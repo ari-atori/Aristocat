@@ -4,6 +4,10 @@ tmp/
 aribot
 aribot_beta
 error.txt
-logs.txt
+disc.txt
 *.o
-logs_beta.txt
+logs_beta.log
+logs_prod.log
+src/commands/__pycache__/
+src/cron_jobs/__pycache__/
+src/real_time/__pycache__/

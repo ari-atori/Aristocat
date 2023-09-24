@@ -1,0 +1,8 @@
+nextcord
+schedule
+dateparser
+mysql-connector-python
+json5
+pandas
+pillow
+apscheduler
