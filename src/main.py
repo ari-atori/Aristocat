@@ -13,6 +13,7 @@ from nextcord.ext.commands import Context
 import boot
 
 from cron_jobs import birthday_cronjob
+from cron_jobs import meow_cronjob
 
 from real_time import member_arithmetic
 
@@ -85,9 +86,11 @@ if __name__ == "__main__":
 				sys.exit(f"Failed to load extension {extension}\n{exception}")
 
 birthdays = birthday_cronjob.BirthdayLoop(bot)
+meow = meow_cronjob.Meow(bot)
 
 scheduler = AsyncIOScheduler()
 scheduler.add_job(birthdays.run, CronTrigger(hour = "8", minute = "0", second = "0", timezone="EST"))
+scheduler.add_job(meow.run, CronTrigger(minute = "0", second = "0", timezone="EST"))
 scheduler.start()
 
 bot.run(config["token"])
