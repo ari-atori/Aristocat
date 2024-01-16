@@ -20,7 +20,9 @@ class Meow():
 		channel = self.bot.get_channel(public["channels"]["general"])
 		self.elapsed += 1
 		if self.elapsed == self.required:
-			await channel.send("meow")
+			catpeople = public["roles"]["catpeople"]
+			mention = f"<@&{catpeople}>"
+			await channel.send(f"{mention} meow")
 			self.elapsed = 0
 			self.required = random.randint(8, 12)
 		
