@@ -2,6 +2,7 @@
 
 import os
 import sys
+import math
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
@@ -16,12 +17,16 @@ from cron_jobs import birthday_cronjob
 from cron_jobs import meow_cronjob
 
 from real_time import member_arithmetic
+from real_time import starboard
 
 intents = nextcord.Intents.default().all()
 
 # TODO: Set command argument to load either beta or production configurations
 with open("../secrets/config_" + sys.argv[1] + ".json") as file:
 	config = json5.load(file)
+
+with open("../public_" + sys.argv[1] + ".json") as file:
+	public = json5.load(file)
 
 class Aristocat(commands.Bot):
 	def __init__(self, config) -> None:
@@ -41,9 +46,11 @@ async def on_ready() -> None:
 	if bot.user is None:
 		sys.exit("Bot has no associated user!")
 	await booter.boot()
-	minute_tasks.start()
+	if not minute_tasks.is_running():
+		minute_tasks.start()
 
 members = member_arithmetic.Member(bot)
+starboard = starboard.Starboard(bot)
 
 @bot.event
 async def on_member_join(member: nextcord.Member) -> None:
@@ -58,6 +65,14 @@ async def on_member_remove(member: nextcord.Member) -> None:
 async def on_message(message: nextcord.Message) -> None:
 	if message.author == bot.user or message.author.bot:
 		return
+
+
+	
+@bot.event
+async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent) -> None:
+	if (payload.emoji.name == "⭐"):
+		await starboard.star(payload)
+	
 
 async def on_command_error(context: Context, error) -> None:
 	description: str

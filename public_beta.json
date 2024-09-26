@@ -16,6 +16,13 @@
 	},
 	"channels" : {
 		"Members": 1155515049285267496,
-		"general": 1137247321491525727
+		"general": 1137247321491525727,
+		"starboard" : 1279668795836993658
+	},
+	"categories" : {
+		"ari-moderator-only" : 0, 
+		"introduction" : 0,
+		"lcoked-area" : 1288976640956825682,
+		"archived" : 0
 	}
 }
