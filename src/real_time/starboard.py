@@ -34,14 +34,13 @@ class Starboard():
 
 		category = channel.category_id
 		for cat in public["categories"]:
-			print(cat)
 			if category == public["categories"][cat]:
 				return
 
 		message = await channel.fetch_message(payload.message_id)
 		reactions = message.reactions
-		#guild = self.bot.get_guild(public["guild"])
-		criteria = 1#self.stars_required(limit = 9, typical_members = 32, typical_stars = 4, members = guild.member_count)
+		guild = self.bot.get_guild(public["guild"])
+		criteria = self.stars_required(limit = 9, typical_members = 32, typical_stars = 4, members = guild.member_count)
 		stars = 0
 		for r in reactions:
 			if r.emoji == "⭐":
