@@ -18,6 +18,7 @@ from cron_jobs import meow_cronjob
 from cron_jobs import membercount_cronjob
 
 from real_time import member_arithmetic
+from real_time import passive_meow
 from real_time import starboard
 
 intents = nextcord.Intents.default().all()
@@ -51,7 +52,8 @@ async def on_ready() -> None:
 		minute_tasks.start()
 
 members = member_arithmetic.Member(bot)
-starboard = starboard.Starboard(bot)
+passivemeow = passive_meow.PassiveMeow(bot)
+starboarder = starboard.Starboard(bot)
 
 @bot.event
 async def on_member_join(member: nextcord.Member) -> None:
@@ -64,8 +66,13 @@ async def on_member_remove(member: nextcord.Member) -> None:
 @bot.event
 async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent) -> None:
 	if (payload.emoji.name == "⭐"):
-		await starboard.star(payload)
+		await starboarder.star(payload)
 	
+@bot.event
+async def on_message(message: nextcord.Message) -> None:
+	if message.author.id == bot.user.id:
+		return
+	await passivemeow.meow(message)
 
 async def on_command_error(context: Context, error) -> None:
 	description: str

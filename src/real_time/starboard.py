@@ -1,5 +1,3 @@
-# Mainly used for the reinstating of statuses and the updating of profiles that could gives roles
-
 import sys
 import json5
 import math
