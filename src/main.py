@@ -15,6 +15,7 @@ import boot
 
 from cron_jobs import birthday_cronjob
 from cron_jobs import meow_cronjob
+from cron_jobs import membercount_cronjob
 
 from real_time import member_arithmetic
 from real_time import starboard
@@ -59,14 +60,6 @@ async def on_member_join(member: nextcord.Member) -> None:
 @bot.event
 async def on_member_remove(member: nextcord.Member) -> None:
 	await members.remove(member)
-
-
-@bot.event
-async def on_message(message: nextcord.Message) -> None:
-	if message.author == bot.user or message.author.bot:
-		return
-
-
 	
 @bot.event
 async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent) -> None:
@@ -102,10 +95,12 @@ if __name__ == "__main__":
 
 birthdays = birthday_cronjob.BirthdayLoop(bot)
 meow = meow_cronjob.Meow(bot)
+membercount = membercount_cronjob.MemberCountLoop(bot)
 
 scheduler = AsyncIOScheduler()
 scheduler.add_job(birthdays.run, CronTrigger(hour = "8", minute = "0", second = "0", timezone="EST"))
 scheduler.add_job(meow.run, CronTrigger(minute = "0", second = "0", timezone="EST"))
+scheduler.add_job(membercount.run, CronTrigger(minute = "0", second = "0", timezone="EST"))
 scheduler.start()
 
 bot.run(config["token"])

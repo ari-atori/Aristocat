@@ -19,8 +19,16 @@ class Member():
 
 	async def join(self, user : nextcord.Member):
 		guild = self.bot.get_guild(public["guild"])
-		channel = guild.get_channel(public["channels"]["Members"])
-		await channel.edit(name="Members: " + str(guild.member_count))
+
+		try:
+			embed = nextcord.Embed(title = "New Member Joined", color=0x3ba55c, description = f"{user.display_name} has joined the server. Welcome!!! :wave:")
+			embed.set_author(name = f"{user.display_name} ({user.name})", icon_url = user.display_avatar.url)
+			welcomebye = self.bot.get_channel(public["channels"]["welcome-bye"])
+			if not welcomebye:
+				welcomebye = await self.bot.fetch_channel(public["channels"]["welcome-bye"])
+			await welcomebye.send(embed = embed)
+		except:
+			print(f"[WARNING] Failed to enter in for user: {user.display_name} ({user.id})")
 
 		mydb = mysql.connector.connect(host=config["db_addr"], user=config["db_user"], password=config["db_pswd"], database=config["db_user"], autocommit=True)
 		mycursor = mydb.cursor(buffered=True)
@@ -36,9 +44,15 @@ class Member():
 		mydb.close()
 
 	async def remove(self, user : nextcord.Member):
-		guild = self.bot.get_guild(public["guild"])
-		channel = guild.get_channel(public["channels"]["Members"])
-		await channel.edit(name="Members: " + str(guild.member_count))
+		try:
+			embed = nextcord.Embed(title = "Member Left", color=0xa53b3b, description = f"{user.display_name} has left the server")
+			embed.set_author(name = f"{user.display_name} ({user.name})", icon_url = user.display_avatar.url)
+			welcomebye = self.bot.get_channel(public["channels"]["welcome-bye"])
+			if not welcomebye:
+				welcomebye = await self.bot.fetch_channel(public["channels"]["welcome-bye"])
+			await welcomebye.send(embed = embed)
+		except:
+			print(f"[WARNING] Failed to enter in for user: {user.display_name} ({user.id})")
 		
 		mydb = mysql.connector.connect(host=config["db_addr"], user=config["db_user"], password=config["db_pswd"], database=config["db_user"], autocommit=True)
 		mycursor = mydb.cursor(buffered=True)
