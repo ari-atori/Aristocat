@@ -21,8 +21,8 @@ class Member():
 		guild = self.bot.get_guild(public["guild"])
 
 		try:
-			embed = nextcord.Embed(title = "New Member Joined", color=0x3ba55c, description = f"{user.display_name} has joined the server. Welcome!!! :wave:")
-			embed.set_author(name = f"{user.display_name} ({user.name})", icon_url = user.display_avatar.url)
+			embed = nextcord.Embed(title = "New Member Joined", color=0x3ba55c, description = f"{user.global_name} has joined the server. Welcome!!! :wave:")
+			embed.set_author(name = f"{user.global_name} ({user.name})", icon_url = user.display_avatar.url)
 			welcomebye = self.bot.get_channel(public["channels"]["welcome-bye"])
 			if not welcomebye:
 				welcomebye = await self.bot.fetch_channel(public["channels"]["welcome-bye"])
@@ -45,8 +45,8 @@ class Member():
 
 	async def remove(self, user : nextcord.Member):
 		try:
-			embed = nextcord.Embed(title = "Member Left", color=0xa53b3b, description = f"{user.display_name} has left the server")
-			embed.set_author(name = f"{user.display_name} ({user.name})", icon_url = user.display_avatar.url)
+			embed = nextcord.Embed(title = "Member Left", color=0xa53b3b, description = f"{user.global_name} has left the server")
+			embed.set_author(name = f"{user.global_name} ({user.name})", icon_url = user.display_avatar.url)
 			welcomebye = self.bot.get_channel(public["channels"]["welcome-bye"])
 			if not welcomebye:
 				welcomebye = await self.bot.fetch_channel(public["channels"]["welcome-bye"])

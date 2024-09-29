@@ -38,7 +38,7 @@ class Starboard():
 		message = await channel.fetch_message(payload.message_id)
 		reactions = message.reactions
 		guild = self.bot.get_guild(public["guild"])
-		criteria = self.stars_required(limit = 9, typical_members = 32, typical_stars = 4, members = guild.member_count)
+		criteria = self.stars_required(limit = 5, typical_members = 31, typical_stars = 4, members = guild.member_count)
 		stars = 0
 		for r in reactions:
 			if r.emoji == "⭐":
@@ -63,13 +63,16 @@ class Starboard():
 
 		attachments = ""
 		if (len(message.attachments) > 0):
+			attnum = 1
 			for att in message.attachments:
 				attachments += f"[[{att.filename}]]({att.url})\n"
 				if att.content_type and att.content_type.startswith('image/'):
 					embed = nextcord.Embed(color=0xffac33, url = message.jump_url)
 					embed.set_image(att.url)
 					embeds.append(embed)
-			embeds[0].add_field(name = f"Attachments", value=attachments)
+				else:
+					embeds[0].add_field(name = f"Attachment {attnum}", value=attachments)
+					attnum += 1
 
 		starboard = self.bot.get_channel(public["channels"]["starboard"])
 		if not starboard:

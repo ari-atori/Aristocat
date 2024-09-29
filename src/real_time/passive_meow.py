@@ -1,6 +1,6 @@
 import sys
 import json5
-import mysql.connector
+import string
 
 import nextcord
 from nextcord.ext import commands
@@ -32,6 +32,7 @@ class PassiveMeow():
 			"mjau",
 			"mnau",
 			"moew",
+			"mow",
 			"mraw",
 			"mrawr",
 			"mrow",
@@ -46,7 +47,8 @@ class PassiveMeow():
 		]
 
 	async def meow(self, message : nextcord.Message):
-		content = message.content.lower()
+		translate = str.maketrans("", "", string.punctuation)
+		content = message.content.lower().translate(translate)
 
 		# Remove repeated characters, that way nnnnyyyyaaaahhhhhhhh could be reduced to nyah, allowing it to count
 		fade = ''.join(['' if i > 0 and e == content[i - 1] else e for i,e in enumerate(content)])
