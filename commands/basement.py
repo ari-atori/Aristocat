@@ -4,7 +4,7 @@ from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 import json5
 
-with open("../public_" + sys.argv[1] + ".json") as file:
+with open("public_" + sys.argv[1] + ".json") as file:
 	public = json5.load(file)
 
 class Basement(commands.Cog, name="basement"):
