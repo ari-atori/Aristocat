@@ -6,10 +6,10 @@ import mysql.connector
 import nextcord
 from nextcord.ext import commands
 
-with open("secrets/config_" + sys.argv[1] + ".json") as file:
+with open("secrets/config_" + (sys.argv[1] if len(sys.argv) > 1 else "prod") + ".json") as file:
 	config = json5.load(file)
 
-with open("public_" + sys.argv[1] + ".json") as file:
+with open("public_" + (sys.argv[1] if len(sys.argv) > 1 else "prod") + ".json") as file:
 	public = json5.load(file)
 
 class Starboard():
