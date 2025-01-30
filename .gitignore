@@ -8,7 +8,8 @@ disc.txt
 *.o
 logs_beta.log
 logs_prod.log
-__pycache__
+.venv/
+__pycache__/
 commands/__pycache__/
 cron_jobs/__pycache__/
 real_time/__pycache__/

@@ -2,7 +2,8 @@ import sys
 import json5
 import mysql.connector
 
-from nextcord.ext import commands
+from datetime import time, timezone, timedelta
+from nextcord.ext import tasks, commands
 
 with open("public_" + (sys.argv[1] if len(sys.argv) > 1 else "prod") + ".json") as file:
 	public = json5.load(file)
@@ -13,7 +14,9 @@ with open("secrets/config_" + (sys.argv[1] if len(sys.argv) > 1 else "prod") + "
 class BirthdayLoop():
 	def __init__(self, bot):
 		self.bot : commands.Bot = bot
+		self.run.start()
 
+	@tasks.loop(time=time(8, 0, tzinfo=timezone(timedelta(hours=-5))))
 	async def run(self):
 		mydb = mysql.connector.connect(host=config["db_addr"], user=config["db_user"], password=config["db_pswd"], database=config["db_user"], autocommit=True)
 		mycursor = mydb.cursor(buffered=True)
@@ -24,3 +27,7 @@ class BirthdayLoop():
 		mydb.commit()
 		mycursor.close()
 		mydb.close()
+
+	@run.before_loop
+	async def prep(self):
+		await self.bot.wait_until_ready()

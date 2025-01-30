@@ -36,7 +36,7 @@ class Member():
 
 		for ir in mycursor:
 			role = guild.get_role(ir[1])
-			if role.name == "@everyone":
+			if role.name == "@everyone" or role.id == public["roles"]["Moderator"]:
 				continue
 			await user.add_roles(role)
 		mydb.commit()
@@ -59,7 +59,7 @@ class Member():
 		mycursor.execute(f"DELETE FROM roles WHERE id={user.id}")
 		mydb.commit()
 		for r in user.roles:
-			if r.name == "@everyone":
+			if r.name == "@everyone" or role.id == public["roles"]["Moderator"]:
 				continue
 			mycursor.execute(f"INSERT INTO roles VALUES ({user.id}, {r.id})")
 			mydb.commit

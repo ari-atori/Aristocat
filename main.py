@@ -3,8 +3,6 @@
 import os
 import sys
 import math
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler.triggers.cron import CronTrigger
 
 import nextcord
 import json5
@@ -103,11 +101,5 @@ if __name__ == "__main__":
 birthdays = birthday_cronjob.BirthdayLoop(bot)
 meow = meow_cronjob.Meow(bot)
 membercount = membercount_cronjob.MemberCountLoop(bot)
-
-scheduler = AsyncIOScheduler()
-scheduler.add_job(birthdays.run, CronTrigger(hour = "8", minute = "0", second = "0", timezone="EST"))
-scheduler.add_job(meow.run, CronTrigger(minute = "0", second = "0", timezone="EST"))
-scheduler.add_job(membercount.run, CronTrigger(minute = "0", second = "0", timezone="EST"))
-scheduler.start()
 
 bot.run(config["token"])
