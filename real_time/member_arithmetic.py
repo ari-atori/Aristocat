@@ -44,8 +44,40 @@ class Member():
 		mydb.close()
 
 	async def remove(self, user : nextcord.Member):
+		guild = self.bot.get_guild(public["guild"])
+
 		try:
-			embed = nextcord.Embed(title = "Member Left", color=0xa53b3b, description = f"{user.global_name} has left the server")
+			kicked = False
+			banned = False
+			reason = ""
+			async for entry in guild.audit_logs(action=nextcord.AuditLogAction.kick, after=user.joined_at, limit=16):
+				if entry.target == user:
+					kicked = True
+					reason = entry.reason
+			async for entry in guild.audit_logs(action=nextcord.AuditLogAction.ban, after=user.joined_at, limit=16):
+				if entry.target == user:
+					banned = True
+					reason = entry.reason
+
+
+			title = "Member Left"
+			description = f"{user.global_name} has left the server"
+			color=0xa53b3b
+			if banned:
+				title = "Member banned"
+				if reason is None:
+					description = f"{user.global_name} was banned without a reason given"
+				else:
+					description = f"{user.global_name} was banned for: {reason}"
+				color=0x000000
+			elif kicked:
+				title = "Member Kicked"
+				if reason is None:
+					description = f"{user.global_name} was kicked without a reason given"
+				else:
+					description = f"{user.global_name} was kicked for: {reason}"
+
+			embed = nextcord.Embed(title = title, color = color, description = description)
 			embed.set_author(name = f"{user.global_name} ({user.name})", icon_url = user.display_avatar.url)
 			welcomebye = self.bot.get_channel(public["channels"]["welcome-bye"])
 			if not welcomebye:
