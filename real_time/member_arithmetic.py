@@ -64,7 +64,7 @@ class Member():
 			description = f"{user.global_name} has left the server"
 			color=0xa53b3b
 			if banned:
-				title = "Member banned"
+				title = "Member Banned"
 				if reason is None:
 					description = f"{user.global_name} was banned without a reason given"
 				else:

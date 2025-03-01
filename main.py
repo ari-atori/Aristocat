@@ -11,6 +11,7 @@ from nextcord.ext.commands import Context
 
 import boot
 
+from cron_jobs import audit_reader_cronjob
 from cron_jobs import birthday_cronjob
 from cron_jobs import meow_cronjob
 from cron_jobs import membercount_cronjob
@@ -98,6 +99,7 @@ if __name__ == "__main__":
 				exception = f"{type(e).__name__}: {e}"
 				sys.exit(f"Failed to load extension {extension}\n{exception}")
 
+audit_reader = audit_reader_cronjob.AuditReader(bot)
 birthdays = birthday_cronjob.BirthdayLoop(bot)
 meow = meow_cronjob.Meow(bot)
 membercount = membercount_cronjob.MemberCountLoop(bot)
