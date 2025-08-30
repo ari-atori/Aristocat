@@ -19,7 +19,7 @@ from cron_jobs import slayercount_cronjob
 
 from real_time import member_arithmetic
 from real_time import passive_meow
-#from real_time import slayers_checker
+from real_time import slayers_checker
 from real_time import starboard
 
 intents = nextcord.Intents.default().all()
@@ -55,7 +55,7 @@ async def on_ready() -> None:
 members = member_arithmetic.Member(bot)
 passivemeow = passive_meow.PassiveMeow(bot)
 starboarder = starboard.Starboard(bot)
-#slayerchecker = slayers_checker.SlayerChecker(bot)
+slayerchecker = slayers_checker.SlayerChecker(bot)
 
 @bot.event
 async def on_member_join(member: nextcord.Member) -> None:
@@ -67,9 +67,8 @@ async def on_member_update(before: nextcord.Member, after: nextcord.Member) -> N
 	# redundant calls. Despite guild tags being per user, tag changes only trigger on_member_update. I have no idea why.
 	# Here, if the per-guild info stays constant, then only the user info must have, which may include the tag change
 	if before.roles == after.roles and before.nick == after.nick:
-		if before.flags == after.flags and after.guild_avatar == after.guild_avatar:
-			print("Should be here!")
-			#await slayerchecker.update(after)
+		if before.flags == after.flags and before.guild_avatar == after.guild_avatar:
+			await slayerchecker.update(after)
 
 @bot.event
 async def on_member_remove(member: nextcord.Member) -> None:
