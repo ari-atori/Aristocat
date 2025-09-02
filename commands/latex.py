@@ -17,13 +17,16 @@ class LaTeX(commands.Cog, name="latex"):
 		if not latex.endswith("$"):
 			latex += "$"
 
+		if len(latex) > 1026: # 2^10 chars for expression + 2 potential chars for $
+			await interaction.response.send_message("I'm sorry, your expression is too long. Try breaking it down into a few statements")
+			return
+		
 		fig, axes = plt.subplots()
 		fig.patch.set_facecolor('black')
 		axes.set_facecolor('black')
 		fig.patch.set_visible(False)
 		axes.axis('off')
-		axes.add_patch(plt.Rectangle((0, 0), 1, 1, transform=axes.transAxes, color='black', zorder=-1))
-		axes.text(0.5, 0.5, latex, fontsize=32, ha='center', va='center', color='white')
+		axes.text(0.5, 0.5, latex, fontsize=32, ha='center', va='center', color='white', bbox=dict(facecolor='black', edgecolor='none', pad=10))
 
 		buffer = BytesIO()
 		plt.savefig(buffer, format='png', bbox_inches='tight', pad_inches=0.2, facecolor='black', transparent=False)
