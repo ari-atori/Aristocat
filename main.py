@@ -21,6 +21,8 @@ from real_time import member_arithmetic
 from real_time import passive_meow
 from real_time import slayers_checker
 from real_time import starboard
+from real_time import suspicious_attachment_checker
+from real_time import suspicious_link_checker
 
 intents = nextcord.Intents.default().all()
 
@@ -56,6 +58,8 @@ members = member_arithmetic.Member(bot)
 passivemeow = passive_meow.PassiveMeow(bot)
 starboarder = starboard.Starboard(bot)
 slayerchecker = slayers_checker.SlayerChecker(bot)
+susattchecker = suspicious_attachment_checker.SuspiciousAttachmentChecker(bot)
+suslnkchecker = suspicious_link_checker.SuspiciousLinkChecker(bot)
 
 @bot.event
 async def on_member_join(member: nextcord.Member) -> None:
@@ -84,6 +88,9 @@ async def on_message(message: nextcord.Message) -> None:
 	if message.author.id == bot.user.id:
 		return
 	await passivemeow.meow(message)
+	if message.attachments != []:
+		await susattchecker.check(message)
+	await suslnkchecker.check(message)
 
 async def on_command_error(context: Context, error) -> None:
 	description: str
